@@ -1,6 +1,6 @@
 [package]
 name = "cxp"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["SteveLauC <stevelauc@outlook.com>"]
 description = "Bring the Copy, Cut and Paste functionalities from your GUI file manager to your Terminal."

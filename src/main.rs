@@ -1,6 +1,6 @@
 use std::{
     env::args_os,
-    ffi::{OsStr, OsString},
+    ffi::OsStr,
     fs::create_dir_all,
     io::Result,
     path::PathBuf,
@@ -35,7 +35,7 @@ impl Cxp {
 
     fn copy<I, S>(&self, operand: I) -> Result<()>
     where
-        I: IntoIterator<Item = S> + Clone,
+        I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
     {
         self.empty()?;
@@ -51,11 +51,10 @@ impl Cxp {
 
     fn cut<I, S>(&self, operand: I) -> Result<()>
     where
-        I: IntoIterator<Item = S> + Clone,
+        I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
     {
         self.empty()?;
-        self.copy(operand.clone())?;
         Command::new("mv")
             .args(operand)
             .arg(self.data_dir.as_path())
@@ -94,7 +93,7 @@ impl Cxp {
 
     fn list(&self) -> Result<()> {
         Command::new("ls")
-            .arg("-al")
+            .arg("-alA")
             .arg(self.data_dir.as_path())
             .spawn()?
             .wait()?;
@@ -104,7 +103,7 @@ impl Cxp {
 
     fn tree(&self) -> Result<()> {
         Command::new("tree")
-            .arg("-al")
+            .arg("-a")
             .arg(self.data_dir.as_path())
             .spawn()?
             .wait()?;
@@ -122,7 +121,7 @@ fn main() {
     let cxp = Cxp::new();
     // `command` should be UTF-8 encoded, use `unwrap()` here.
     let cmd = av.next().unwrap().into_string().unwrap();
-    let operand = av.collect::<Vec<OsString>>();
+    let operand = av;
     let res = match cmd.as_str() {
         "c" => cxp.copy(operand),
         "x" => cxp.cut(operand),
@@ -173,24 +172,24 @@ mod test {
     }
 
     #[test]
-    fn test_move() {
+    fn test_cut() {
         let cxp = Cxp::new();
         let mut buffer = cxp.data_dir.clone();
 
         let mut tmp_file = temp_dir();
-        tmp_file.push("cxp_test_move");
+        tmp_file.push("cxp_test_cut");
 
         let _ = File::create(tmp_file.as_path());
 
         assert!(tmp_file.exists());
 
-        cxp.copy([tmp_file.as_path()])
+        cxp.cut([tmp_file.as_path()])
             .expect("failed to copy tmp_file to the buffer");
 
-        buffer.push("cxp_test_move");
+        buffer.push("cxp_test_cut");
         assert!(buffer.exists());
+        assert!(!tmp_file.exists());
 
         cxp.empty().expect("failed to empty the buffer");
-        remove_file(tmp_file).expect("failed to clean temporary file");
     }
 }
