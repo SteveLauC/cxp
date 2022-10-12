@@ -1,10 +1,20 @@
 ## cxp
 
+[![BUILD](https://github.com/stevelauc/cxp/workflows/Rust/badge.svg)](https://github.com/stevelauc/cxp/actions/workflows/rust.yml)
+[![crates.io](https://img.shields.io/crates/v/cxp.svg)](https://crates.io/crates/cxp)
+[![docs.rs](https://docs.rs/cxp/badge.svg)](https://docs.rs/cxp)
+
 Bring the Copy, Cut and Paste functionalities from your GUI file manager to your
 Terminal.
 
 > This is basically a Rust port of [xcv](https://github.com/busterc/xcv), with 
 > cross-platform data directories support.
+
+## Installation
+
+```shell
+$ cargo install cxp
+```
 
 ## Usage
 
