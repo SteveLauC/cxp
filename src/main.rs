@@ -1,3 +1,6 @@
+//! Bring the Copy, Cut, and Paste functionalities from your GUI file manager to
+//! your Terminal.
+
 use std::{
     env::args_os,
     ffi::OsStr,
@@ -17,8 +20,8 @@ cxp command [operand]
         c: copy files
         x: cut files
         p: paste files into $PWD
-        l: list files
-        t: list files in a tree format
+        l: list files in the buffer
+        t: list files in the buffer in a tree format
         e: empty file buffer"#;
 
 struct Cxp {
@@ -26,6 +29,7 @@ struct Cxp {
 }
 
 impl Cxp {
+    /// Construct a [Cxp] instance.
     fn new() -> Self {
         let mut path = data_dir().expect("can not find data dir");
         path.push("cxp");
@@ -33,6 +37,9 @@ impl Cxp {
         Self { data_dir: path }
     }
 
+    /// Copy `operand` to `data_dir`.
+    ///
+    /// Call `cp(1)` under the hood.
     fn copy<I, S>(&self, operand: I) -> Result<()>
     where
         I: IntoIterator<Item = S>,
@@ -49,6 +56,9 @@ impl Cxp {
         Ok(())
     }
 
+    /// Move `operand` to `data_dir`.
+    ///
+    /// Call `mv(1)` under the hood
     fn cut<I, S>(&self, operand: I) -> Result<()>
     where
         I: IntoIterator<Item = S>,
@@ -64,6 +74,7 @@ impl Cxp {
         Ok(())
     }
 
+    /// Paste files from `data_dir` into `$PWD`.
     fn paste(&self) -> Result<()> {
         for opt_file in self.data_dir.read_dir()? {
             let file = opt_file?;
@@ -80,6 +91,7 @@ impl Cxp {
         Ok(())
     }
 
+    /// Empty `data_dir`.
     fn empty(&self) -> Result<()> {
         for opt_file in self.data_dir.read_dir()? {
             let file = opt_file?;
@@ -91,6 +103,9 @@ impl Cxp {
         Ok(())
     }
 
+    /// List files in `data_dir`.
+    ///
+    /// Call `ls -alA` under the hood.
     fn list(&self) -> Result<()> {
         Command::new("ls")
             .arg("-alA")
@@ -101,6 +116,9 @@ impl Cxp {
         Ok(())
     }
 
+    /// List files in `data_dir` in a tree format.
+    ///
+    /// Call `tree -a` under the hood.
     fn tree(&self) -> Result<()> {
         Command::new("tree")
             .arg("-a")
@@ -113,11 +131,13 @@ impl Cxp {
 }
 
 fn main() {
+    // basic argument check
     let mut av = args_os().skip(1);
     if av.len() < 1 {
         eprintln!("{}", USAGE);
         exit(1);
     }
+
     let cxp = Cxp::new();
     // `command` should be UTF-8 encoded, use `unwrap()` here.
     let cmd = av.next().unwrap().into_string().unwrap();
