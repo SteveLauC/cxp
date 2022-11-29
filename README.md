@@ -2,6 +2,8 @@
 
 [![BUILD](https://github.com/stevelauc/cxp/workflows/Rust/badge.svg)](https://github.com/stevelauc/cxp/actions/workflows/rust.yml)
 [![crates.io](https://img.shields.io/crates/v/cxp.svg)](https://crates.io/crates/cxp)
+![Crates.io](https://img.shields.io/crates/d/cxp?color=orange)
+[![License](http://img.shields.io/badge/license-GPL-orange.svg)](https://github.com/SteveLauC/cxp/blob/main/LICENSE)
 
 Bring the Copy, Cut and Paste functionalities from your GUI file manager to your
 Terminal.
