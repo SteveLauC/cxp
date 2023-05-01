@@ -11,4 +11,4 @@ categories = ["command-line-utilities"]
 keywords = ["command-line-tool", "copy", "paste", "cut"]
 
 [dependencies]
-dirs = "5.0.0"
+dirs = "5.0.1"
